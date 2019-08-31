@@ -1,0 +1,31 @@
+{
+  "name": "svgtree",
+  "version": "1.0.0",
+  "description": "JS Family Tree SVG Plotter Library ",
+  "main": "dist/svgtree.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "watch": "tsc -w -p tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maxwroc/SVGTree.git"
+  },
+  "keywords": [
+    "drawing tree",
+    "tree diagram",
+    "tree chart"
+  ],
+  "author": "Max Chodorowski",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/maxwroc/SVGTree/issues"
+  },
+  "homepage": "https://maxwroc.github.io/SVGTree/",
+  "devDependencies": {
+    "@types/d3": "^3.5.42",
+    "@types/d3-selection-multi": "^1.0.7",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {}
+}

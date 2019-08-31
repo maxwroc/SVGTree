@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "system",
+        "target": "es6",
+        "sourceMap": false,
+        "strict": true,
+        "strictNullChecks": false,
+        "allowUnreachableCode": false,
+        "noImplicitReturns": true,
+        "noUnusedLocals": false,
+        "rootDir": "src/",
+        "outFile": "dist/svgtree.js"
+    },
+    "compileOnSave": true
+}
