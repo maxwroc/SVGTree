@@ -21,12 +21,11 @@ module SVGTree {
             }
         }
 
-        // generation - three depth
-        public depth = 0;
+        // current node final/calculated coordinates
+        private coords: ICoords = { x: 0, y: 0 };
+
         // children of current node
         public children: Node[] = [];
-        // current node final/calculated coordinates
-        public coords: ICoords = { x: 0, y: 0 };
 
         /**
          * Initializes class
@@ -64,8 +63,9 @@ module SVGTree {
          * This function must not be called before all children were drawn
          *
          * @param x - default x value (won't be used when more than 1 child)
+         * @param depth - "level" number starting from root
          */
-        setCoords(x: number) {
+        setCoords(x: number, depth: number) {
             if (this.children.length < 2) {
                 this.coords.x = x;
             }
@@ -73,7 +73,7 @@ module SVGTree {
                 this.coords.x = Math.floor((this.firstChild().coords.x + this.lastChild().coords.x) / 2)
             }
 
-            this.coords.y = this.depth * (this.props.height + this.props.space.generation);
+            this.coords.y = depth * (this.props.height + this.props.space.generation);
         }
 
         /**

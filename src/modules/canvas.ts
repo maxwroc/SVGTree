@@ -57,8 +57,7 @@ module SVGTree.Canvas {
             x = drawSubTree(child, x, depth + 1, container);
         }
 
-        node.depth = depth;
-        node.setCoords(x);
+        node.setCoords(x, depth);
 
         node.print(container);
 

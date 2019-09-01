@@ -125,8 +125,7 @@ var SVGTree;
             for (const child of node.children) {
                 x = drawSubTree(child, x, depth + 1, container);
             }
-            node.depth = depth;
-            node.setCoords(x);
+            node.setCoords(x, depth);
             node.print(container);
             return node.maxContainerX();
         }
@@ -174,12 +173,10 @@ var SVGTree;
                     generation: 20
                 }
             };
-            // generation - three depth
-            this.depth = 0;
-            // children of current node
-            this.children = [];
             // current node final/calculated coordinates
             this.coords = { x: 0, y: 0 };
+            // children of current node
+            this.children = [];
         }
         /**
          * Gets first child (throws when no children)
@@ -205,15 +202,16 @@ var SVGTree;
          * This function must not be called before all children were drawn
          *
          * @param x - default x value (won't be used when more than 1 child)
+         * @param depth - "level" number starting from root
          */
-        setCoords(x) {
+        setCoords(x, depth) {
             if (this.children.length < 2) {
                 this.coords.x = x;
             }
             else {
                 this.coords.x = Math.floor((this.firstChild().coords.x + this.lastChild().coords.x) / 2);
             }
-            this.coords.y = this.depth * (this.props.height + this.props.space.generation);
+            this.coords.y = depth * (this.props.height + this.props.space.generation);
         }
         /**
          * Returns minimal x value where next node on the same level can be drawn
