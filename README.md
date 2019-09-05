@@ -21,9 +21,11 @@ Steps:
 1. If it has children draw them first
     * pass current `x` and incremented depth to the recursive call
     * set the value of `x` based on returned result (shifted x if children were printed)
-2. Set final coordinates based on passed `x` and current `depth`
-3. Draw the node
-    * it draws connection lines to all the children (as they were drawn already)
+2. Draw the node
+    * set final coordinates based on passed `x` and current `depth`
+    * draw node box
+    * draw connection lines to all the children (as they were drawn already)
+    * return container max x value (edge of descendants container + space)
 4. Return new `x` value - the minimal value where the next node can be drawn. It has to be the end of the most right descendant incremented by the space (which we want to have between the nodes)
 
 
@@ -34,11 +36,7 @@ function drawSubTree(node: Node, x: number, depth: number, container: d3.Selecti
         x = drawSubTree(child, x, depth + 1, container);
     }
 
-    node.setCoords(x, depth);
-
-    node.print(container);
-
-    return node.maxContainerX();
+    return node.drawAndGetRightEdge(container, x, depth);
 }
 ```
 

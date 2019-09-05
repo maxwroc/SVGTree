@@ -57,11 +57,7 @@ module SVGTree.Canvas {
             x = drawSubTree(child, x, depth + 1, container);
         }
 
-        node.setCoords(x, depth);
-
-        node.print(container);
-
-        return node.maxContainerX();
+        return node.drawAndGetRightEdge(container, x, depth);
     }
 
     export function drawTree(root: Node) {

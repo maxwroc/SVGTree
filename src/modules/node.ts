@@ -58,47 +58,14 @@ module SVGTree {
         }
 
         /**
-         * Sets final node coordinations
-         *
-         * This function must not be called before all children were drawn
-         *
+         * Draws node on given container
+         * @param container - container where node should be drawn
          * @param x - default x value (won't be used when more than 1 child)
          * @param depth - "level" number starting from root
          */
-        setCoords(x: number, depth: number) {
-            if (this.children.length < 2) {
-                this.coords.x = x;
-            }
-            else {
-                this.coords.x = Math.floor((this.firstChild().coords.x + this.lastChild().coords.x) / 2)
-            }
+        drawAndGetRightEdge(container: any, x: number, depth: number): number {
 
-            this.coords.y = depth * (this.props.height + this.props.space.generation);
-        }
-
-        /**
-         * Returns minimal x value where next node on the same level can be drawn
-         */
-        maxContainerX() {
-            // set default to end of the single box
-            let maxx = this.coords.x + this.props.width;
-            if (this.children.length > 1) {
-                let mostRightDescendant = this.lastChild();
-                while (mostRightDescendant.children.length) {
-                    mostRightDescendant = mostRightDescendant.lastChild();
-                }
-
-                maxx = mostRightDescendant.coords.x + this.props.width;
-            }
-
-            return maxx + this.props.space.sibling;
-        }
-
-        /**
-         * Draws node on given container
-         * @param container - container where node should be drawn
-         */
-        print(container: any) {
+            this.setCoords(x, depth);
 
             // since we want to render some elements in the node we create group to position them easier
             const boxGroup = container
@@ -126,6 +93,8 @@ module SVGTree {
 
             // draw connection line with children - since all of them should be rendered at this point
             this.connectChildren(container);
+
+            return this.maxContainerX();
         }
 
         /**
@@ -148,6 +117,43 @@ module SVGTree {
                 y: this.coords.y + this.props.height,
                 isRelative: false
             }
+        }
+
+        /**
+         * Sets final node coordinations
+         *
+         * This function must not be called before all children were drawn
+         *
+         * @param x - default x value (won't be used when more than 1 child)
+         * @param depth - "level" number starting from root
+         */
+        private setCoords(x: number, depth: number) {
+            if (this.children.length < 2) {
+                this.coords.x = x;
+            }
+            else {
+                this.coords.x = Math.floor((this.firstChild().coords.x + this.lastChild().coords.x) / 2)
+            }
+
+            this.coords.y = depth * (this.props.height + this.props.space.generation);
+        }
+
+        /**
+         * Returns minimal x value where next node on the same level can be drawn
+         */
+        private maxContainerX() {
+            // set default to end of the single box
+            let maxx = this.coords.x + this.props.width;
+            if (this.children.length > 1) {
+                let mostRightDescendant = this.lastChild();
+                while (mostRightDescendant.children.length) {
+                    mostRightDescendant = mostRightDescendant.lastChild();
+                }
+
+                maxx = mostRightDescendant.coords.x + this.props.width;
+            }
+
+            return maxx + this.props.space.sibling;
         }
 
         /**

@@ -125,9 +125,7 @@ var SVGTree;
             for (const child of node.children) {
                 x = drawSubTree(child, x, depth + 1, container);
             }
-            node.setCoords(x, depth);
-            node.print(container);
-            return node.maxContainerX();
+            return node.drawAndGetRightEdge(container, x, depth);
         }
         function drawTree(root) {
             drawSubTree(root, 80, // x - starting point od the tree
@@ -197,6 +195,59 @@ var SVGTree;
             return this.children[this.children.length - 1];
         }
         /**
+         * Draws node on given container
+         * @param container - container where node should be drawn
+         * @param x - default x value (won't be used when more than 1 child)
+         * @param depth - "level" number starting from root
+         */
+        drawAndGetRightEdge(container, x, depth) {
+            this.setCoords(x, depth);
+            // since we want to render some elements in the node we create group to position them easier
+            const boxGroup = container
+                .append("g")
+                .attr("transform", `translate(${this.coords.x},${this.coords.y})`);
+            boxGroup.append("rect")
+                .attrs({ x: 0, y: 0, width: this.props.width, height: this.props.height, fill: "rgb(159, 213, 235)" })
+                .attr("rx", this.props.rounded)
+                .attr("ry", this.props.rounded)
+                .attr("stroke-width", 1.5)
+                .attr("stroke", "rgb(142, 191, 211)");
+            boxGroup.append("text")
+                .attrs({
+                x: Math.floor(this.props.width / 2),
+                y: Math.floor(this.props.height / 2) + 2,
+                "alignment-baseline": "middle",
+                "text-anchor": "middle",
+                textLength: this.props.width,
+                style: "font-size: 24px; font-weight: bold; font-family: SANS-SERIF",
+                fill: "rgb(77, 148, 177)"
+            })
+                .text(this.name);
+            // draw connection line with children - since all of them should be rendered at this point
+            this.connectChildren(container);
+            return this.maxContainerX();
+        }
+        /**
+         * Returns coordinates of center top point of the node
+         */
+        getMiddleTop() {
+            return {
+                x: this.coords.x + Math.floor(this.props.width / 2),
+                y: this.coords.y,
+                isRelative: false
+            };
+        }
+        /**
+         * Returns coordinates of center bottom point of the node
+         */
+        getMiddleBottom() {
+            return {
+                x: this.coords.x + Math.floor(this.props.width / 2),
+                y: this.coords.y + this.props.height,
+                isRelative: false
+            };
+        }
+        /**
          * Sets final node coordinations
          *
          * This function must not be called before all children were drawn
@@ -227,55 +278,6 @@ var SVGTree;
                 maxx = mostRightDescendant.coords.x + this.props.width;
             }
             return maxx + this.props.space.sibling;
-        }
-        /**
-         * Draws node on given container
-         * @param container - container where node should be drawn
-         */
-        print(container) {
-            // since we want to render some elements in the node we create group to position them easier
-            const boxGroup = container
-                .append("g")
-                .attr("transform", `translate(${this.coords.x},${this.coords.y})`);
-            boxGroup.append("rect")
-                .attrs({ x: 0, y: 0, width: this.props.width, height: this.props.height, fill: "rgb(159, 213, 235)" })
-                .attr("rx", this.props.rounded)
-                .attr("ry", this.props.rounded)
-                .attr("stroke-width", 1.5)
-                .attr("stroke", "rgb(142, 191, 211)");
-            boxGroup.append("text")
-                .attrs({
-                x: Math.floor(this.props.width / 2),
-                y: Math.floor(this.props.height / 2) + 2,
-                "alignment-baseline": "middle",
-                "text-anchor": "middle",
-                textLength: this.props.width,
-                style: "font-size: 24px; font-weight: bold; font-family: SANS-SERIF",
-                fill: "rgb(77, 148, 177)"
-            })
-                .text(this.name);
-            // draw connection line with children - since all of them should be rendered at this point
-            this.connectChildren(container);
-        }
-        /**
-         * Returns coordinates of center top point of the node
-         */
-        getMiddleTop() {
-            return {
-                x: this.coords.x + Math.floor(this.props.width / 2),
-                y: this.coords.y,
-                isRelative: false
-            };
-        }
-        /**
-         * Returns coordinates of center bottom point of the node
-         */
-        getMiddleBottom() {
-            return {
-                x: this.coords.x + Math.floor(this.props.width / 2),
-                y: this.coords.y + this.props.height,
-                isRelative: false
-            };
         }
         /**
          * Draws connection lines between current node and its children
